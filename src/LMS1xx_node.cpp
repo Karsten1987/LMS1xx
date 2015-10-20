@@ -60,6 +60,25 @@ int main(int argc, char **argv)
       ros::Duration(1).sleep();
       continue;
     }
+    // initialize hardware
+    do {
+      laser.connect(host);
+
+      if (laser.isConnected())
+      {
+	laser.login();
+	cfg = laser.getScanCfg();
+	outputRange = laser.getScanOutputRange();
+      }
+
+      //check if laser is fully initialized, else reconnect
+      //assuming fully initialized => scaningFrequency=5000
+      //if (cfg.scaningFrequency != 5000) {
+	//laser.disconnect();
+	//ROS_INFO("Waiting for laser to initialize...");
+      //}
+
+    } while (!laser.isConnected());
 
     ROS_DEBUG("Logging in to laser.");
     laser.login();
