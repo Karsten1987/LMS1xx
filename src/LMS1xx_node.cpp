@@ -77,6 +77,7 @@ int main(int argc, char **argv)
 	//laser.disconnect();
 	//ROS_INFO("Waiting for laser to initialize...");
       //}
+	ROS_INFO("Waiting for laser to initialize...");
 
     } while (!laser.isConnected());
 
@@ -84,14 +85,6 @@ int main(int argc, char **argv)
     laser.login();
     cfg = laser.getScanCfg();
     outputRange = laser.getScanOutputRange();
-
-    if (cfg.scaningFrequency != 5000)
-    {
-      laser.disconnect();
-      ROS_WARN("Unable to get laser output range. Retrying.");
-      ros::Duration(1).sleep();
-      continue;
-    }
 
     ROS_INFO("Connected to laser.");
 
