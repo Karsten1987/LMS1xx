@@ -51,7 +51,6 @@ typedef enum
 class LMS1xx
 {
 public:
-<<<<<<< HEAD
   LMS1xx();
   virtual ~LMS1xx();
 
@@ -183,6 +182,7 @@ protected:
   bool connected_;
   LMSBuffer buffer_;
   int socket_fd_;
+
 };
 
 #endif /* LMS1XX_H_ */
