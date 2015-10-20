@@ -83,10 +83,35 @@ bool LMS1xx::isConnected()
   return connected_;
 }
 
-void LMS1xx::startMeas()
-{
-  char buf[100];
-  sprintf(buf, "%c%s%c", 0x02, "sMN LMCstartmeas", 0x03);
+void LMS1xx::reboot() {
+	char buf[100];
+	sprintf(buf, "%c%s%c",
+      0x02, "sMN mSCreboot", 0x03);
+
+	write(sockDesc, buf, strlen(buf));
+
+	int len = read(sockDesc, buf, 100);
+	buf[len] = 0;
+  logWarn("Reboot RX: %s", buf);
+}
+
+void LMS1xx::setIP(const ipCfg& cfg) {
+	char buf[100];
+	sprintf(buf, "%c%s %X %X %X %X%c",
+      0x02, "sWN EIIpAddr",
+			cfg.oct_0, cfg.oct_1, cfg.oct_2, cfg.oct_3,
+			0x03);
+
+	write(sockDesc, buf, strlen(buf));
+
+	int len = read(sockDesc, buf, 100);
+	buf[len] = 0;
+  logWarn("Set IP RX: %s", buf);
+}
+
+void LMS1xx::startMeas() {
+	char buf[100];
+	sprintf(buf, "%c%s%c", 0x02, "sMN LMCstartmeas", 0x03);
 
   write(socket_fd_, buf, strlen(buf));
 
@@ -206,18 +231,6 @@ void LMS1xx::setScanDataCfg(const scanDataCfg &cfg)
 
   int len = read(socket_fd_, buf, 100);
   buf[len - 1] = 0;
-}
-
-void LMS1xx::setOutputRange(const scanOutputRange &cfg) {
-	char buf[100];
-	sprintf(buf, "%c%s 1 %X %X %X%c", 0x02, "sWN LMPoutputRange",
-			cfg.angleResolution, cfg.startAngle, cfg.stopAngle, 0x03);
-
-	write(sockDesc, buf, strlen(buf));
-
-	int len = read(sockDesc, buf, 100);
-
-	buf[len - 1] = 0;
 }
 
 void LMS1xx::setOutputRange(const scanOutputRange &cfg) {

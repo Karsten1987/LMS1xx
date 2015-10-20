@@ -4,6 +4,8 @@
 #include "ros/ros.h"
 #include "sensor_msgs/LaserScan.h"
 
+#include <boost/algorithm/string.hpp>
+
 #define DEG2RAD M_PI/180.0
 
 int main(int argc, char **argv)
@@ -15,7 +17,6 @@ int main(int argc, char **argv)
 
   // parameters
   std::string host;
-  std::string frame_id;
 
   const std::string& node_name = "lms1xx_configuration";
   ros::init(argc, argv, node_name);
@@ -55,6 +56,36 @@ int main(int argc, char **argv)
   n.param<int>("stop_angle",         scan_config.stopAngle,        scan_config.stopAngle);
   bool make_persistent = false;
   n.param<bool>("make_persistent",   make_persistent,              make_persistent);
+  std::string ip_address;
+  n.param<std::string>("ip_address", ip_address,                   ip_address);
+
+  if (ip_address != host)
+  {
+    ROS_WARN_STREAM_NAMED(node_name, "You specified a different IP address."
+        << "Going to reset the IP address of the laser to " << ip_address << ". "
+        << "After that, you won't be able to connect to your laser with this address: " << host);
+
+    std::vector<std::string> ip_octet_strings;
+    boost::split(ip_octet_strings, ip_address, boost::is_any_of("."));
+    if (ip_octet_strings.size() !=4)
+    {
+      ROS_ERROR_STREAM_NAMED(node_name, "IP address is malformed! Should be in form of <xxx>.<xxx>.<xxx>.<xxx>");
+      exit(-1);
+    }
+
+    ipCfg ip_config;
+    ip_config.oct_0 = atoi(ip_octet_strings[0].c_str());
+    ip_config.oct_1 = atoi(ip_octet_strings[1].c_str());
+    ip_config.oct_2 = atoi(ip_octet_strings[2].c_str());
+    ip_config.oct_3 = atoi(ip_octet_strings[3].c_str());
+
+    ROS_DEBUG_STREAM("Gonna send this octets " << ip_config.oct_0 << " " << ip_config.oct_1 << " " << ip_config.oct_2 << " " << ip_config.oct_3);
+    laser.setIP(ip_config);
+
+    laser.reboot();
+    ROS_WARN_STREAM_NAMED(node_name, "New IP address set! Rebooting device now. Please reconnect with the new IP: " << ip_address);
+    return 0;
+  }
 
   output_config.angleResolution = scan_config.angleResolution;
   output_config.startAngle      = scan_config.startAngle;
