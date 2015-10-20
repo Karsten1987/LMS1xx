@@ -51,6 +51,7 @@ typedef enum
 class LMS1xx
 {
 public:
+<<<<<<< HEAD
   LMS1xx();
   virtual ~LMS1xx();
 
@@ -134,6 +135,16 @@ public:
   * @returns scanOutputRange structure.
   */
   scanOutputRange getScanOutputRange() const;
+
+  /*!
+   * @brief Set output range configuration.
+   * Get output range configuration :
+   * - angle resolution.
+   * - start angle.
+   * - stop angle.
+   * @param cfg structure containing output range configuration.
+   */
+  void setOutputRange(const scanOutputRange &cfg);
 
   /*!
   * @brief Start or stop continuous data acquisition.
