@@ -39,6 +39,7 @@ typedef enum
   in_preparation = 5,
   ready = 6,
   ready_for_measurement = 7
+}
 
 typedef struct _ipCfg {
 
@@ -266,6 +267,16 @@ public:
   */
   bool isConnected();
 
+	/*!
+	* @brief Reboots device.
+	*/
+	void reboot();
+
+	/*!
+	* @brief Set IP address.
+	*/
+	void setIP(const ipCfg& cfg);
+  
   /*!
   * @brief Start measurements.
   * After receiving this command LMS1xx unit starts spinning laser and measuring.
@@ -376,6 +387,7 @@ protected:
   bool connected_;
   LMSBuffer buffer_;
   int socket_fd_;
+
 };
 
 #endif /* LMS1XX_H_ */

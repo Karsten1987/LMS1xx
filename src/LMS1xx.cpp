@@ -109,6 +109,20 @@ void LMS1xx::setIP(const ipCfg& cfg) {
   logWarn("Set IP RX: %s", buf);
 }
 
+void LMS1xx::setIP(const ipCfg& cfg) {
+	char buf[100];
+	sprintf(buf, "%c%s %X %X %X %X%c",
+      0x02, "sWN EIIpAddr",
+			cfg.oct_0, cfg.oct_1, cfg.oct_2, cfg.oct_3,
+			0x03);
+
+	write(sockDesc, buf, strlen(buf));
+
+	int len = read(sockDesc, buf, 100);
+	buf[len] = 0;
+  logWarn("Set IP RX: %s", buf);
+}
+
 void LMS1xx::startMeas() {
 	char buf[100];
 	sprintf(buf, "%c%s%c", 0x02, "sMN LMCstartmeas", 0x03);
