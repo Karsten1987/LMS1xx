@@ -387,6 +387,12 @@ protected:
   bool connected_;
   LMSBuffer buffer_;
   int socket_fd_;
+	/*!
+	* @brief The device is returned to the measurement mode after configuration.
+	*
+	*/
+  std::string getIdent();
+
 
 };
 

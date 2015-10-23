@@ -546,3 +546,25 @@ void LMS1xx::startDevice()
   buf[len] = 0;
   logDebug("RX: %s", buf);
 }
+
+std::string LMS1xx::getIdent()
+{
+	char buf[100];
+	sprintf(buf, "%c%s%c", 0x02, "sRN DeviceIdent", 0x03);
+
+	write(sockDesc, buf, strlen(buf));
+
+	int len = read(sockDesc, buf, 100);
+  buf[len] = 0;
+
+  std::string ident = "";
+  char* ident_c;
+  logWarn("RX ident %s", buf);
+  if (buf[0] != 0x02)
+    return "";
+  if (buf[2] != 'R')
+    return "";
+
+  std::string buf_str(buf+5);
+  return buf_str;
+}
