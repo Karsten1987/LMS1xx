@@ -555,7 +555,7 @@ std::string LMS1xx::getIdent()
 	write(sockDesc, buf, strlen(buf));
 
 	int len = read(sockDesc, buf, 100);
-  buf[len] = 0;
+  buf[len-1] = 0;
 
   std::string ident = "";
   char* ident_c;
