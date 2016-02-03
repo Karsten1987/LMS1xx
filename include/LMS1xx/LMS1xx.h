@@ -377,6 +377,13 @@ public:
   */
   void startDevice();
 
+  void setPulseFilter(bool enable);
+  
+	/*!
+	* @brief The device is returned to the measurement mode after configuration.
+	*
+	*/
+  std::string getIdent();
 protected:
   /*!
   * @brief Receive single scan message.
@@ -387,13 +394,6 @@ protected:
   bool connected_;
   LMSBuffer buffer_;
   int socket_fd_;
-	/*!
-	* @brief The device is returned to the measurement mode after configuration.
-	*
-	*/
-  std::string getIdent();
-
-
 };
 
 #endif /* LMS1XX_H_ */

@@ -568,3 +568,18 @@ std::string LMS1xx::getIdent()
   std::string buf_str(buf+5);
   return buf_str;
 }
+
+void LMS1xx::setPulseFilter(bool enable) {
+	char buf[100];
+	sprintf(buf, "%c%s %d%c", 0x02, "sWN LFPnto1filter", static_cast<int>(enable), 0x03);
+  logWarn("going to set Pulse filter");
+  logWarn(buf);
+	write(sockDesc, buf, strlen(buf));
+
+	int len = read(sockDesc, buf, 100);
+
+	if (buf[0] != 0x02)
+		logWarn("invalid packet recieved");
+	buf[len] = 0;
+	logWarn("RX: %s", buf);
+}
