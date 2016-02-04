@@ -378,6 +378,7 @@ public:
   void startDevice();
 
   void setPulseFilter(bool enable);
+  void setParticleFilter(bool enable);
   
 	/*!
 	* @brief The device is returned to the measurement mode after configuration.

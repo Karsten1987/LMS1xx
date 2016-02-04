@@ -583,3 +583,18 @@ void LMS1xx::setPulseFilter(bool enable) {
 	buf[len] = 0;
 	logWarn("RX: %s", buf);
 }
+
+void LMS1xx::setParticleFilter(bool enable) {
+	char buf[100];
+	sprintf(buf, "%c%s %d+500%c", 0x02, "sWN LFPparticle", static_cast<int>(enable), 0x03);
+  logWarn("going to set particle filter");
+  logWarn(buf);
+	write(sockDesc, buf, strlen(buf));
+
+	int len = read(sockDesc, buf, 100);
+
+	if (buf[0] != 0x02)
+		logWarn("invalid packet recieved");
+	buf[len] = 0;
+	logWarn("RX: %s", buf);
+}
