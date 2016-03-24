@@ -84,48 +84,34 @@ bool LMS1xx::isConnected()
 }
 
 void LMS1xx::reboot() {
-	char buf[100];
-	sprintf(buf, "%c%s%c",
+  char buf[100];
+  sprintf(buf, "%c%s%c",
       0x02, "sMN mSCreboot", 0x03);
 
-	write(sockDesc, buf, strlen(buf));
+  write(socket_fd_, buf, strlen(buf));
 
-	int len = read(sockDesc, buf, 100);
-	buf[len] = 0;
+  int len = read(socket_fd_, buf, 100);
+  buf[len] = 0;
   logWarn("Reboot RX: %s", buf);
 }
 
 void LMS1xx::setIP(const ipCfg& cfg) {
-	char buf[100];
-	sprintf(buf, "%c%s %X %X %X %X%c",
+  char buf[100];
+  sprintf(buf, "%c%s %X %X %X %X%c",
       0x02, "sWN EIIpAddr",
-			cfg.oct_0, cfg.oct_1, cfg.oct_2, cfg.oct_3,
-			0x03);
+      cfg.oct_0, cfg.oct_1, cfg.oct_2, cfg.oct_3,
+      0x03);
 
-	write(sockDesc, buf, strlen(buf));
+  write(socket_fd_, buf, strlen(buf));
 
-	int len = read(sockDesc, buf, 100);
-	buf[len] = 0;
-  logWarn("Set IP RX: %s", buf);
-}
-
-void LMS1xx::setIP(const ipCfg& cfg) {
-	char buf[100];
-	sprintf(buf, "%c%s %X %X %X %X%c",
-      0x02, "sWN EIIpAddr",
-			cfg.oct_0, cfg.oct_1, cfg.oct_2, cfg.oct_3,
-			0x03);
-
-	write(sockDesc, buf, strlen(buf));
-
-	int len = read(sockDesc, buf, 100);
-	buf[len] = 0;
+  int len = read(socket_fd_, buf, 100);
+  buf[len] = 0;
   logWarn("Set IP RX: %s", buf);
 }
 
 void LMS1xx::startMeas() {
-	char buf[100];
-	sprintf(buf, "%c%s%c", 0x02, "sMN LMCstartmeas", 0x03);
+  char buf[100];
+  sprintf(buf, "%c%s%c", 0x02, "sMN LMCstartmeas", 0x03);
 
   write(socket_fd_, buf, strlen(buf));
 
@@ -248,21 +234,21 @@ void LMS1xx::setScanDataCfg(const scanDataCfg &cfg)
 }
 
 void LMS1xx::setOutputRange(const scanOutputRange &cfg) {
-	char buf[100];
-	sprintf(buf, "%c%s 1 %X %X %X%c", 0x02, "sWN LMPoutputRange",
-			cfg.angleResolution, cfg.startAngle, cfg.stopAngle, 0x03);
+  char buf[100];
+  sprintf(buf, "%c%s 1 %X %X %X%c", 0x02, "sWN LMPoutputRange",
+      cfg.angleResolution, cfg.startAngle, cfg.stopAngle, 0x03);
 
-	write(sockDesc, buf, strlen(buf));
+  write(socket_fd_, buf, strlen(buf));
 
-	int len = read(sockDesc, buf, 100);
+  int len = read(socket_fd_, buf, 100);
 
-	buf[len - 1] = 0;
+  buf[len - 1] = 0;
 }
 
 scanOutputRange LMS1xx::getScanOutputRange() const {
-	scanOutputRange outputRange;
-	char buf[100];
-	sprintf(buf, "%c%s%c", 0x02, "sRN LMPoutputRange", 0x03);
+  scanOutputRange outputRange;
+  char buf[100];
+  sprintf(buf, "%c%s%c", 0x02, "sRN LMPoutputRange", 0x03);
 
   write(socket_fd_, buf, strlen(buf));
 
@@ -549,12 +535,12 @@ void LMS1xx::startDevice()
 
 std::string LMS1xx::getIdent()
 {
-	char buf[100];
-	sprintf(buf, "%c%s%c", 0x02, "sRN DeviceIdent", 0x03);
+  char buf[100];
+  sprintf(buf, "%c%s%c", 0x02, "sRN DeviceIdent", 0x03);
 
-	write(sockDesc, buf, strlen(buf));
+  write(socket_fd_, buf, strlen(buf));
 
-	int len = read(sockDesc, buf, 100);
+  int len = read(socket_fd_, buf, 100);
   buf[len-1] = 0;
 
   std::string ident = "";
@@ -570,31 +556,31 @@ std::string LMS1xx::getIdent()
 }
 
 void LMS1xx::setPulseFilter(bool enable) {
-	char buf[100];
-	sprintf(buf, "%c%s %d%c", 0x02, "sWN LFPnto1filter", static_cast<int>(enable), 0x03);
+  char buf[100];
+  sprintf(buf, "%c%s %d%c", 0x02, "sWN LFPnto1filter", static_cast<int>(enable), 0x03);
   logWarn("going to set Pulse filter");
   logWarn(buf);
-	write(sockDesc, buf, strlen(buf));
+  write(socket_fd_, buf, strlen(buf));
 
-	int len = read(sockDesc, buf, 100);
+  int len = read(socket_fd_, buf, 100);
 
-	if (buf[0] != 0x02)
-		logWarn("invalid packet recieved");
-	buf[len] = 0;
-	logWarn("RX: %s", buf);
+  if (buf[0] != 0x02)
+    logWarn("invalid packet recieved");
+  buf[len] = 0;
+  logWarn("RX: %s", buf);
 }
 
 void LMS1xx::setParticleFilter(bool enable) {
-	char buf[100];
-	sprintf(buf, "%c%s %d+500%c", 0x02, "sWN LFPparticle", static_cast<int>(enable), 0x03);
+  char buf[100];
+  sprintf(buf, "%c%s %d+500%c", 0x02, "sWN LFPparticle", static_cast<int>(enable), 0x03);
   logWarn("going to set particle filter");
   logWarn(buf);
-	write(sockDesc, buf, strlen(buf));
+  write(socket_fd_, buf, strlen(buf));
 
-	int len = read(sockDesc, buf, 100);
+  int len = read(socket_fd_, buf, 100);
 
-	if (buf[0] != 0x02)
-		logWarn("invalid packet recieved");
-	buf[len] = 0;
-	logWarn("RX: %s", buf);
+  if (buf[0] != 0x02)
+    logWarn("invalid packet recieved");
+  buf[len] = 0;
+  logWarn("RX: %s", buf);
 }

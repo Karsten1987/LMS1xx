@@ -203,4 +203,27 @@ struct scanData
   uint16_t rssi2[1082];
 };
 
+struct ipCfg {
+
+  /*!
+   * @brief first octet ip address.
+   */
+  int oct_0;
+
+  /*!
+   * @brief second octet ip address.
+   */
+  int oct_1;
+
+  /*!
+   * @brief third octet ip address.
+   */
+  int oct_2;
+
+  /*!
+   * @brief fourth octet ip address.
+   */
+  int oct_3;
+};
+
 #endif  // LMS1XX_LMS_STRUCTS_H_
